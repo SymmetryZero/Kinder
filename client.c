@@ -55,23 +55,21 @@ int main(int argc, char *argv[]){
         /*     exit(-1); */
 
         /* } */
+        if(connect(fd, (struct sockaddr *)&server, sizeof(struct sockaddr)) == 1){
+            // llamada a connect()
+            printf("Conect() error \n");
+            exit(-1);
+        }
         f_procesos = fopen("procesos.txt", "r");
 
         for (int i = 0; i < 25; ++i) {
             for (int j = 0; j < 20; ++j) {
                 /* fscanf(f_procesos, "%s", proceso); */
-                if(connect(fd, (struct sockaddr *)&server, sizeof(struct sockaddr)) == 1){
-                    // llamada a connect()
-                    printf("Conect() error \n");
-                    exit(-1);
-                }
-
                 fgets(proceso, 30, f_procesos);
                 fflush(stdout);
                 printf("%s", proceso);
                 
                 send(fd, proceso, 30, 0);
-                close(fd);
             }
             printf("\n");
             sleep(2);
@@ -83,6 +81,7 @@ int main(int argc, char *argv[]){
 
         /* printf("Mensaje del servidor: %s\n", buf); */
         // muestra el mensaje de bienvenida del servidor = )
+        close(fd);
     }
     else{
         printf("No se ingreso el ip y puerto por parametro\n");

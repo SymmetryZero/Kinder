@@ -47,21 +47,22 @@ int main(int argc, char **argv){
         }
 
         //Quinto paso, aceptar conexiones
-        while(1){
-            longitud_cliente = sizeof(struct sockaddr_in);
             /* A continuación la llamada a accept() */
 
-            if ((fd2 = accept(fd, (struct sockaddr *)&client, &longitud_cliente)) == -1){
-                printf("error an accept()\n");
-                exit(-1);
-            }
+        if ((fd2 = accept(fd, (struct sockaddr *)&client, &longitud_cliente)) == -1){
+            printf("error an accept()\n");
+            exit(-1);
+        }
 
-           /* send(fd2, "Bienvenido a mi servidor. \n", 26, 0); */
+        while(1){
+            
+            longitud_cliente = sizeof(struct sockaddr_in);
+            /* send(fd2, "Bienvenido a mi servidor. \n", 26, 0); */
             recv(fd2, proceso, 30, 0);
             printf("%s", proceso);
-            close(fd2);
         }
-        close(fd);
+            close(fd2);
+        /* close(fd); */
     }else
     {
         printf("NO se ingreso el puerto por parametro\n");
