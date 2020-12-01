@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <strings.h>
 #include <sys/types.h>
@@ -14,6 +15,7 @@ int main(int argc, char **argv){
         puerto = atoi(argv[1]);
 
         char proceso[30];
+        char lote[20][30];
 
         //Se crean dos estructuras de tipo sockaddr, la primera guarda info del server y la segunda del cliente
 
@@ -47,24 +49,34 @@ int main(int argc, char **argv){
         }
 
         //Quinto paso, aceptar conexiones
-            /* A continuación la llamada a accept() */
+
+        longitud_cliente = sizeof(struct sockaddr_in);
+        /* A continuación la llamada a accept() */
 
         if ((fd2 = accept(fd, (struct sockaddr *)&client, &longitud_cliente)) == -1){
-            printf("error an accept()\n");
+            printf("error en accept()\n");
             exit(-1);
         }
 
-        while(1){
-            
-            longitud_cliente = sizeof(struct sockaddr_in);
-            /* send(fd2, "Bienvenido a mi servidor. \n", 26, 0); */
-            recv(fd2, proceso, 30, 0);
-            printf("%s", proceso);
+        int i = 0;
+        while(1) {
+            int length;
+            if (recv(fd2, &length, sizeof(length), 0) == 0) {
+                break; //Se rompe cuando el socket del cliente se cierra
+            }
+            recv(fd2, proceso, length, 0);
+            strcpy(lote[i], proceso);
+            fflush(stdout);
+            printf("%s\n", proceso); 
+            /* if (i == 19) { */
+            /*     //xd */
+            /* } */
+            /* i = (i + i) % 20; */
         }
-            close(fd2);
-        /* close(fd); */
-    }else
-    {
+
+        close(fd2);
+        close(fd);
+    } else {
         printf("NO se ingreso el puerto por parametro\n");
     }
     return 0;

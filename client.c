@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -48,13 +49,6 @@ int main(int argc, char *argv[]){
         // *he->h_addr pasa la informacion de *he a *h_addr
         bzero(&(server.sin_zero),8);
 
-        // paso 3, conectamos al servidor
-        /* if((numbytes = recv(fd, buf, 100, 0)) == 1){ */
-        /*     // llamada a recv() */
-        /*     printf("error en recv()\n"); */
-        /*     exit(-1); */
-
-        /* } */
         if(connect(fd, (struct sockaddr *)&server, sizeof(struct sockaddr)) == 1){
             // llamada a connect()
             printf("Conect() error \n");
@@ -64,23 +58,23 @@ int main(int argc, char *argv[]){
 
         for (int i = 0; i < 25; ++i) {
             for (int j = 0; j < 20; ++j) {
-                /* fscanf(f_procesos, "%s", proceso); */
                 fgets(proceso, 30, f_procesos);
+                proceso[strcspn(proceso, "\n")] = 0; //Eliminar \n
+                int len_proceso = strlen(proceso) + 1;
                 fflush(stdout);
-                printf("%s", proceso);
+                printf("%s\n", proceso);
                 
-                send(fd, proceso, 30, 0);
+                send(fd, &len_proceso, sizeof(len_proceso), 0);
+                send(fd, proceso, len_proceso, 0);
             }
             printf("\n");
-            sleep(2);
+            sleep(5);
         }
+
+        send(fd, 0, sizeof(int), 0);
 
         fclose(f_procesos);
 
-        /* buf[numbytes] = '\0'; */
-
-        /* printf("Mensaje del servidor: %s\n", buf); */
-        // muestra el mensaje de bienvenida del servidor = )
         close(fd);
     }
     else{
