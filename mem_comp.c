@@ -6,10 +6,10 @@
 #include <string.h>
 
 key_t shmkey = 0x200;
+int id_bloque;
 
 s_lote* attachMemoryBlock() {
     s_lote *lote;
-    int id_bloque;
     //creacion de bloque
     if((id_bloque = shmget(shmkey, sizeof(s_lote), 0644 |IPC_CREAT)) == -1){ 
         perror("Error al crear bloque.");
@@ -29,9 +29,9 @@ s_lote* attachMemoryBlock() {
     return lote;
 }
 
-void detachMemoryBlock(int *block) {
-    shmdt(block);
-    printf("Block detached.\n");
+void detachMemoryBlock() {
+    shmdt(&id_bloque);
+    printf("\nBloque de memoria desconectado.\n");
 }
 
 void destroyMemoryBlock() {

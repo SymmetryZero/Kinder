@@ -55,29 +55,34 @@ int main(int argc, char *argv[]){
             exit(-1);
         }
         f_procesos = fopen("procesos.txt", "r");
+        
+        printf("Enviando procesos al servidor...\n\n");
+        sleep(3);
 
         for (int i = 0; i < 25; ++i) {
             for (int j = 0; j < 20; ++j) {
                 fgets(proceso, 30, f_procesos);
                 proceso[strcspn(proceso, "\n")] = 0; //Eliminar \n
                 int len_proceso = strlen(proceso) + 1;
-                fflush(stdout);
-                printf("%s\n", proceso);
+                /* fflush(stdout); */
+                /* printf("%s\n", proceso); */
                 
                 send(fd, &len_proceso, sizeof(len_proceso), 0);
                 send(fd, proceso, len_proceso, 0);
             }
-            printf("\n");
-            sleep(5);
+            /* printf("\n"); */
         }
 
-        send(fd, 0, sizeof(int), 0);
+        /* send(fd, 0, sizeof(int), 0); */
 
         fclose(f_procesos);
 
         close(fd);
+        printf("Procesos enviados correctamente.\n");
     }
     else{
-        printf("No se ingreso el ip y puerto por parametro\n");
+        printf("No se ingresó el ip y puerto por parámetro. Uso: ./client <ip> <puerto>\n");
     }
+
+    return 0;
 }

@@ -32,7 +32,7 @@ int manejarSemaforo(int semid, int numsem, int op){  //manejo de semaforo con op
         if (errno == EIDRM) {
             return errno;
         }
-        perror("Error\n");//error al modificar semaforo
+        perror("Error al modificar semáforos.\n");//error al modificar semaforo
         exit(1);
     } else {
         return 0;

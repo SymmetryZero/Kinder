@@ -70,59 +70,45 @@ int main(int argc, char **argv){
         int flag = 1;
         while(1) {
             manejarSemaforo(semaforos, mutex, down);
+            fflush(stdout);
+            sleep(1);
+            printf("Entrando en región crítica. ");
+
             if (lote->num_p == 0) {
                 for (int i = 0; i < 20; ++i) {
                     int length;
 
                     if ((flag = recv(fd2, &length, sizeof(length), 0)) == 0) {
+                        detachMemoryBlock();
                         semctl(semaforos, 0, IPC_RMID); //Borra semáforos para terminar ejecución del desp
                         break; //Se rompe cuando el socket del cliente se cierra
                     }
                     recv(fd2, proceso, length, 0);
                     strcpy(lote->procesos[i], proceso);
-
-                    fflush(stdout);
-                    printf("%s\n", lote->procesos[i]); 
                 }
                 lote->num_p = 20;
             }
-            manejarSemaforo(semaforos, procesos_mutex, up);
-            manejarSemaforo(semaforos, mutex, up);
 
             if (flag == 0) {
+                sleep(1);
+                printf("Buffer vacío. Ejecución terminada.\n");
                 break;
             }
 
-            sleep(5);
-            /* if (i == 19) { */
-                
-            /* } */
-            /* int length; */
-            /* if (recv(fd2, &length, sizeof(length), 0) == 0) { */
-            /*     break; //Se rompe cuando el socket del cliente se cierra */
-            /* } */
-            /* recv(fd2, proceso, length, 0); */
-            /* strcpy(lote->procesos[i], proceso); */
-            /* fflush(stdout); */
-            /* printf("%s\n", lote->procesos[i]); */ 
-            /* if (i == 19) { */
-            /*     while (1) { */
-            /*         manejarSemaforo(semaforos, mutex, down); */
-            /*         if (lote->num_p == 0) { */
-                        
-            /*             lote->num_p = 20; */
-            /*         } */
+            printf("Enviando lote de procesos...\n\n");
+            sleep(3);
 
-            /*     } */
-            /* } */
-            /* i = (i + 1) % 20; */
+            printf("Saliendo de región crítica...\n\n");
+            manejarSemaforo(semaforos, procesos_mutex, up);
+            manejarSemaforo(semaforos, mutex, up);
+
             sleep(1);
         }
 
         close(fd2);
         close(fd);
     } else {
-        printf("NO se ingreso el puerto por parametro\n");
+        printf("No se ingresó puerto por parámetro. Uso: ./server <puerto>\n");
     }
     return 0;
 

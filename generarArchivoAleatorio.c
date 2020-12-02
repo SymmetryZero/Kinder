@@ -16,11 +16,8 @@ void generarArchivoDeProcesosPorLotes(){
     nombres = fopen("nombres.txt","r");
     if (nombres == NULL)
         exit(1);
-    else
-    {
-        printf("\nEl contenido del archivo de prueba es \n\n");
-        while (feof(nombres) == 0)
-        {
+    else {
+        while (feof(nombres) == 0) {
             fgets(nombresParaProcesos[contador],100,nombres);
             nombresParaProcesos[contador][strcspn(nombresParaProcesos[contador], "\r\n")] = 0;
             contador ++;

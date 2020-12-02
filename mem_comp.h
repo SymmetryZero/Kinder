@@ -10,7 +10,7 @@ typedef struct struct_lote {
 } s_lote;
 
 s_lote* attachMemoryBlock();
-void detachMemoryBlock(int *block);
+void detachMemoryBlock();
 void destroyMemoryBlock();
 
 #define BLOCK_SIZE sizeof(int)
